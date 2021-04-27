@@ -24,6 +24,8 @@ const { Header, Content, Footer, Sider } = Layout;
 export const RouterPage = () => {
   const { ocultarMenu } = useContext(UiContext);
 
+  const date = new Date().getFullYear();
+
   return (
     <>
       <Router>
@@ -59,7 +61,7 @@ export const RouterPage = () => {
               </div>
             </Content>
             <Footer style={{ textAlign: "center" }}>
-              Ant Design ©2018 Created by Ant UED
+              Ant Design ©{date} Created by Ant UED
             </Footer>
           </Layout>
         </Layout>
