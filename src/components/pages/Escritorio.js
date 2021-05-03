@@ -1,7 +1,9 @@
+import React, { useState, useContext } from "react";
+import { Redirect, useHistory } from "react-router";
 import { CloseCircleOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, Col, Divider, Row, Typography } from "antd";
-import React, { useState } from "react";
-import { Redirect, useHistory } from "react-router";
+
+import { SocketContext } from "../../context/SocketContext";
 import {
   getUsuarioStorage,
   clearUserStorage,
@@ -15,7 +17,10 @@ export const Escritorio = () => {
 
   const history = useHistory();
 
+  const { socket } = useContext(SocketContext);
+
   const [usuario] = useState(getUsuarioStorage());
+  const [ticket, setTicket] = useState(null);
 
   const salir = () => {
     clearUserStorage();
@@ -23,7 +28,9 @@ export const Escritorio = () => {
   };
 
   const siguienteTicket = () => {
-    console.log("siguiente Ticket");
+    socket.emit("next-ticket", { usuario }, (ticket) => {
+      setTicket(ticket);
+    });
   };
 
   if (!usuario.agente || !usuario.escritorio) {
@@ -45,19 +52,21 @@ export const Escritorio = () => {
           </Button>
         </Col>
       </Row>
-      <Divider></Divider>
-      <Row>
-        <Col>
-          <Text style={{ fontSize: 30 }}>
-            Está atentiendo el ticket número:{" "}
-          </Text>
-          <Text type="danger" style={{ fontSize: 30 }}>
-            {" "}
-            55
-          </Text>
-        </Col>
-      </Row>
-      <Divider></Divider>
+      <Divider />
+
+      {ticket && (
+        <Row>
+          <Col>
+            <Text style={{ fontSize: 30 }}>
+              Está atentiendo el ticket número:{" "}
+            </Text>
+            <Text type="danger" style={{ fontSize: 30 }}>
+              {ticket.number}
+            </Text>
+          </Col>
+        </Row>
+      )}
+      <Divider />
       <Row>
         <Col offset={18} span={6} align="right">
           <Button onClick={siguienteTicket}>
